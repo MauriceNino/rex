@@ -1,0 +1,93 @@
+{
+  "name": "rex",
+  "version": "1.0.0",
+  "license": "MIT",
+  "private": true,
+  "repository": "https://github.com/MauriceNino/rex",
+  "author": "MauriceNino <mauriceprivat98@gmail.com>",
+  "bugs": {
+    "url": "https://github.com/MauriceNino/rex/issues"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "nodemon src/index.ts",
+    "test": "eslint ."
+  },
+  "packageManager": "yarn@3.5.0",
+  "dependencies": {
+    "express": "4.18.2",
+    "wildcard-match": "5.1.2"
+  },
+  "devDependencies": {
+    "@semantic-release/changelog": "6.0.3",
+    "@semantic-release/git": "10.0.1",
+    "@types/express": "4.17.17",
+    "@types/node": "18.16.0",
+    "@typescript-eslint/eslint-plugin": "5.59.0",
+    "@typescript-eslint/parser": "5.59.0",
+    "eslint": "8.39.0",
+    "eslint-config-prettier": "8.8.0",
+    "eslint-plugin-import": "2.27.5",
+    "eslint-plugin-prettier": "4.2.1",
+    "eslint-plugin-simple-import-sort": "10.0.0",
+    "nodemon": "2.0.22",
+    "prettier": "2.8.8",
+    "semantic-release-plus": "20.0.0",
+    "ts-loader": "9.4.2",
+    "ts-node": "10.9.1",
+    "typescript": "5.0.4"
+  },
+  "release": {
+    "branches": [
+      "main"
+    ],
+    "plugins": [
+      [
+        "@semantic-release/commit-analyzer",
+        {
+          "releaseRules": [
+            {
+              "type": "docs",
+              "release": "patch"
+            },
+            {
+              "type": "chore",
+              "release": "patch"
+            },
+            {
+              "type": "refactor",
+              "release": "patch"
+            }
+          ]
+        }
+      ],
+      "@semantic-release/release-notes-generator",
+      [
+        "@semantic-release/changelog",
+        {
+          "changelogFile": ".github/CHANGELOG.md"
+        }
+      ],
+      [
+        "@semantic-release/github",
+        {
+          "successComment": ":tada: This issue has been resolved in version ${nextRelease.version}\n\nPlease check the [changelog](https://github.com/MauriceNino/dashdot/blob/main/.github/CHANGELOG.md) for more details.",
+          "failComment": false,
+          "failTitle": false,
+          "labels": false,
+          "releasedLabels": false
+        }
+      ],
+      [
+        "@semantic-release/git",
+        {
+          "assets": [
+            ".github/CHANGELOG.md"
+          ],
+          "message": "chore(release): ${nextRelease.version} [CI SKIP]\n\n${nextRelease.notes}"
+        }
+      ]
+    ]
+  }
+}

@@ -1,0 +1,71 @@
+name: Publish
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # SETUP
+      - uses: actions/checkout@v2
+      - uses: docker/setup-qemu-action@v2
+      - uses: docker/setup-buildx-action@v2
+      - uses: docker/login-action@v2
+        with:
+          username: mauricenino
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+          cache: 'yarn'
+      - env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "package_version=$(yarn semantic-release -d | sed -n 's/.*next release version is \([0-9]\+\.[0-9]\+\.[0-9]\+\)/\1/p')" >> "$GITHUB_ENV"
+      - run: |
+          [ ! -z "${package_version}" ] || exit 1
+
+      # DEPLOY
+      - uses: docker/metadata-action@v4
+        id: meta
+        with:
+          images: |
+            ghcr.io/mauricenino/rex
+            mauricenino/rex
+          labels: |
+            org.opencontainers.image.title="REX"
+            org.opencontainers.image.description="Remote code executor"
+            org.opencontainers.image.authors="MauriceNino <mauriceprivat98@gmail.com>"
+            org.opencontainers.image.url=https://github.com/MauriceNino/rex
+            org.opencontainers.image.source=https://github.com/MauriceNino/rex
+            org.opencontainers.image.licenses=MIT
+          tags: |
+            type=semver,pattern={{version}},value=${{ format('v{0}', env.package_version) }},enable=${{ github.ref_name == 'main' }}
+            type=semver,pattern={{major}}.{{minor}},value=${{ format('v{0}', env.package_version) }},enable=${{ github.ref_name == 'main' }}
+            type=semver,pattern={{major}},value=${{ format('v{0}', env.package_version) }},enable=${{ github.ref_name == 'main' }}
+            type=ref,event=branch,enable=${{ github.ref_name != 'main' }}
+            type=sha
+
+      - uses: docker/build-push-action@v4
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm/v7,linux/arm64/v8
+          target: prod
+          push: true
+          build-args: |
+            VERSION=${{ github.ref_name == 'main' && env.package_version || format('0.0.0-{0}', github.ref_name) }}
+            BUILDHASH=${{ github.sha }}
+          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.meta.outputs.tags }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - run: yarn semantic-release

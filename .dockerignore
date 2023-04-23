@@ -1,0 +1,27 @@
+# dependencies
+/node_modules
+.yarn/*
+!.yarn/cache
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+# production
+/dist
+/tmp
+/out-tsc
+/scripts
+
+# misc
+**.DS_Store
+.github
+.vscode
+**/*.md
+
+# docker
+.dockerignore
+Dockerfile
+Dockerfile.dev
+docker-compose.yml
