@@ -69,3 +69,9 @@ module.exports = ({ route }) =>
       `);
     });
 ```
+
+Which you can then call via a simple HTTP call:
+
+```sh
+curl https://rex.mauz.dev/deploy?service=rex&image=mauricenino/rex:latest&secret=some_secret_token
+```
