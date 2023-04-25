@@ -73,5 +73,9 @@ module.exports = ({ route }) =>
 Which you can then call via a simple HTTP call:
 
 ```sh
-curl https://rex.mauz.dev/deploy?service=rex&image=mauricenino/rex:latest&secret=some_secret_token
+curl --get \
+  --data-urlencode "service=rex" \
+  --data-urlencode "image=mauricenino/rex:latest" \
+  --data-urlencode "secret=some_secret_token" \
+  https://rex.mauz.dev/deploy
 ```
