@@ -30,7 +30,7 @@ fs.readdir(CONFIG.script_path, (err, files) => {
       });
 
       // eslint-disable-next-line @typescript-eslint/no-var-requires
-      require(`${scriptPath}`)({
+      __non_webpack_require__(`${scriptPath}`)({
         route: new RouteBuilder(req, res, logger),
         exec: prepareExec(logger),
         log: logger,
