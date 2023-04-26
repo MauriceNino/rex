@@ -28,5 +28,5 @@ module.exports = {
     'simple-import-sort/imports': 'error',
     'simple-import-sort/exports': 'error',
   },
-  ignorePatterns: ['scripts/**'],
+  ignorePatterns: ['scripts/**', 'webpack.config.js', 'dist/**'],
 };

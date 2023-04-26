@@ -9,7 +9,7 @@
     "url": "https://github.com/MauriceNino/rex/issues"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "webpack",
     "start": "node dist/index.js",
     "dev": "nodemon --inspect src/index.ts",
     "test": "eslint ."
@@ -37,7 +37,9 @@
     "semantic-release-plus": "20.0.0",
     "ts-loader": "9.4.2",
     "ts-node": "10.9.1",
-    "typescript": "5.0.4"
+    "typescript": "5.0.4",
+    "webpack": "5.81.0",
+    "webpack-cli": "5.0.2"
   },
   "release": {
     "branches": [

@@ -25,14 +25,9 @@ RUN \
   apk update &&\
   apk --no-cache add docker docker-cli-compose
 
-COPY --from=build /app/package.json .
-COPY --from=build /app/version.json .
-COPY --from=build /app/.pnp.cjs .
-COPY --from=build /app/.yarnrc.yml .
-COPY --from=build /app/yarn.lock .
-COPY --from=build /app/.yarn .yarn
-
-COPY --from=build /app/dist dist
+COPY --from=build /app/package.json /app/version.json ./
+COPY --from=build /app/.yarn/releases .yarn/releases
+COPY --from=build /app/dist/index.js dist/index.js
 
 EXPOSE 3000
 
