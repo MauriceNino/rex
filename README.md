@@ -49,10 +49,11 @@ In your `REX_SCRIPT_PATH` you can place `.js` files with a structure like so:
 
 ```js
 // deploy.js
-const exec = require('util').promisify(require('child_process').exec);
-
-module.exports = ({ route }) =>
+module.exports = ({ route, exec, log }) =>
   route
+    .settings({
+      sendLogs: true, // Send logs as response to the HTTP call
+    })
     .param('service', {
       options: ['rex', 'some_other_service'],
     })
@@ -62,6 +63,8 @@ module.exports = ({ route }) =>
     .onCall(async options => {
       const service = options.service.value;
       const image = options.image.value;
+
+      log.info(`Deploying ${service} with image ${image}`);
 
       await exec(`
         docker image pull ${image} &&\\

@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import wildcard from 'wildcard-match';
 
 import { CONFIG } from './config';
+import { log, Logger } from './log';
+import { trimStr } from './util';
 
 class ParamError extends Error {
   constructor(public param: string) {
@@ -15,9 +17,18 @@ type ParamOptions = {
 
 type ParamMap = Record<string, ParamOptions & { value: string }>;
 
+type Settings = {
+  sendLogs?: boolean;
+};
 export class RouteBuilder {
   private paramMap: ParamMap = {};
-  constructor(private req: Request, private res: Response) {}
+  private _settings: Settings = {};
+
+  constructor(
+    private req: Request,
+    private res: Response,
+    private logger: Logger
+  ) {}
 
   private validateParams() {
     const secret = this.req.query.secret;
@@ -31,6 +42,11 @@ export class RouteBuilder {
     });
   }
 
+  public settings(settings: Settings) {
+    this._settings = settings;
+    return this;
+  }
+
   public param(name: string, options?: ParamOptions): RouteBuilder {
     this.paramMap[name] = { ...options, value: this.req.query[name] as string };
     return this;
@@ -42,7 +58,11 @@ export class RouteBuilder {
     try {
       this.validateParams();
       await func(this.paramMap);
-      this.res.status(200).send();
+      this.res
+        .status(200)
+        .send(
+          this._settings.sendLogs ? this.logger.getLogs().join('\n') : 'Ok'
+        );
     } catch (e) {
       if (e instanceof ParamError) {
         if (e.param === 'secret') {
@@ -54,9 +74,17 @@ export class RouteBuilder {
         }
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      console.error((e as any).stderr ?? (e as any).message ?? (e as any));
-      this.res.status(500).send('Unknown error');
+      log.withPrefix('<').error(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        trimStr((e as any).stderr ?? (e as any).message) ?? (e as any)
+      );
+      this.res
+        .status(500)
+        .send(
+          this._settings.sendLogs
+            ? this.logger.getLogs().join('\n')
+            : 'Internal Server Error'
+        );
     }
   }
 }

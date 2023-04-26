@@ -1,17 +1,22 @@
+import chalk from 'chalk';
 import express from 'express';
 import fs from 'fs';
 import path from 'path';
 
 import { CONFIG } from './config';
+import { prepareExec } from './exec';
+import { log, Logger } from './log';
 import { RouteBuilder } from './route-builder';
 
 const app = express();
 
 if (!CONFIG.script_path) {
-  throw new Error('REX_SCRIPT_PATH needs to be provided');
+  log.error('REX_SCRIPT_PATH needs to be provided');
+  process.exit(1);
 }
 if (!CONFIG.secret) {
-  throw new Error('REX_SECRET needs to be provided');
+  log.error('REX_SECRET needs to be provided');
+  process.exit(1);
 }
 
 fs.readdir(CONFIG.script_path, (err, files) => {
@@ -19,14 +24,34 @@ fs.readdir(CONFIG.script_path, (err, files) => {
     const serviceName = path.parse(file).name;
     const scriptPath = path.join(CONFIG.script_path!, file);
 
-    console.log(`registered endpoint ${serviceName}`);
     app.get(`/${serviceName}`, async (req, res) => {
+      const logger = new Logger({
+        preserveLogs: true,
+      });
+
       // eslint-disable-next-line @typescript-eslint/no-var-requires
-      await require(`${scriptPath}`)({ route: new RouteBuilder(req, res) });
+      require(`${scriptPath}`)({
+        route: new RouteBuilder(req, res, logger),
+        exec: prepareExec(logger),
+        log: logger,
+      });
     });
+
+    log.info(`registered endpoint ${chalk.green(serviceName)}`);
   });
+  log.info('-'.repeat(30));
 });
 
 app.listen(CONFIG.port, function () {
-  console.log(`rex is listening on port ${CONFIG.port}`);
+  log.info(`rex is listening on port ${chalk.yellow(CONFIG.port)}`);
+});
+
+process.on('uncaughtException', e => {
+  log.error(e);
+  process.exit(1);
+});
+
+process.on('unhandledRejection', function (e, p) {
+  log.error(e);
+  process.exit(1);
 });
