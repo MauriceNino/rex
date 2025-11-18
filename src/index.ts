@@ -41,7 +41,9 @@ const startServer = () => {
 			const serviceName = path.parse(file).name;
 			// biome-ignore lint/style/noNonNullAssertion: Asserted above
 			const scriptPath = path.join(CONFIG.script_path!, file);
-			const absoluteScriptPath = path.join(process.cwd(), scriptPath);
+			const absoluteScriptPath = CONFIG.script_path?.startsWith("/")
+				? scriptPath
+				: path.join(process.cwd(), scriptPath);
 
 			app.get(`/${serviceName}`, async (req, res) => {
 				const logger = new Logger({
