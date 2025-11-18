@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/MauriceNino/rex/compare/v1.1.1...v1.2.0) (2025-11-18)
+
+
+### Features
+
+* add REX_PRE_LOAD variable; fix build/dev commands ([2809cab](https://github.com/MauriceNino/rex/commit/2809cab426cd2e45d34c6165eab3c1172bbf9de7))
+
 ## [1.1.1](https://github.com/MauriceNino/rex/compare/v1.1.0...v1.1.1) (2023-04-26)
 
 
