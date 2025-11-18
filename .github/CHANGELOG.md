@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/MauriceNino/rex/compare/v1.2.0...v1.2.1) (2025-11-18)
+
+
+### Bug Fixes
+
+* script paths not working with absolute paths ([a017517](https://github.com/MauriceNino/rex/commit/a017517888c04e0bf25dce0927ffe0be2ce49f95))
+
 # [1.2.0](https://github.com/MauriceNino/rex/compare/v1.1.1...v1.2.0) (2025-11-18)
 
 
