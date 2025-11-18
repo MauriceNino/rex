@@ -1,0 +1,5 @@
+GET http://localhost:3000/pipeline?secret=1234567890&outcome=success
+
+###
+
+GET http://localhost:3000/pipeline?secret=1234567890&outcome=failure

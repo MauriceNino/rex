@@ -82,3 +82,12 @@ curl --get \
   --data-urlencode "secret=some_secret_token" \
   https://rex.mauz.dev/deploy
 ```
+
+## Options
+
+| Option            | Description                                                                                         |
+| ----------------- | --------------------------------------------------------------------------------------------------- |
+| `REX_SCRIPT_PATH` | The path to the scripts. Normally doesn't need to be adjusted for Docker installs                   |
+| `REX_PORT`        | The port to listen on. Defaults to `3000`                                                           |
+| `REX_SECRET`      | The secret token to use                                                                             |
+| `REX_PRE_LOAD`    | Code to run before the script is loaded to for example add additional dependencies to the container |

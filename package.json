@@ -9,15 +9,17 @@
 		"url": "https://github.com/MauriceNino/rex/issues"
 	},
 	"scripts": {
-		"build": "webpack",
+		"build": "esbuild src/index.ts --sourcemap --bundle --platform=node --target=es2020 --outfile=dist/index.js",
 		"start": "node dist/index.js",
-		"dev": "nodemon --inspect src/index.ts",
+		"start:docker": "docker compose up --build",
+		"dev": "nodemon --watch src --ext ts --exec \"yarn build && yarn start\"",
 		"test": "biome check src",
 		"format": "biome check --write src"
 	},
 	"packageManager": "yarn@4.11.0",
 	"dependencies": {
 		"chalk": "4.1.2",
+		"dotenv": "17.2.3",
 		"express": "4.18.2",
 		"wildcard-match": "5.1.2"
 	},
@@ -27,6 +29,7 @@
 		"@semantic-release/git": "10.0.1",
 		"@types/express": "5.0.5",
 		"@types/node": "24.10.1",
+		"esbuild": "0.27.0",
 		"nodemon": "3.1.11",
 		"prettier": "2.8.8",
 		"semantic-release-plus": "20.0.0",

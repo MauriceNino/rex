@@ -19,6 +19,7 @@
 .github
 .vscode
 **/*.md
+.env
 
 # docker
 .dockerignore

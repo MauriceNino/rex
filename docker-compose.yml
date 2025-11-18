@@ -1,0 +1,17 @@
+services:
+  rex:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    volumes:
+      - ./test_scripts:/scripts:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    env_file: ./.env
+    environment:
+      REX_SCRIPT_PATH: /scripts
+      REX_PRE_LOAD: >
+        apk update &&
+        apk add git openssh &&
+        git config --global --add safe.directory '*'

@@ -4,7 +4,7 @@ FROM node:24-alpine AS base
 WORKDIR /app
 
 # BUILD #
-FROM base as build
+FROM base AS build
 
 ARG BUILDHASH
 ARG VERSION
@@ -17,7 +17,7 @@ RUN \
   yarn build
 
 # PROD #
-FROM base as prod
+FROM base AS prod
 
 ENV REX_SCRIPT_PATH="/scripts"
 
@@ -25,10 +25,9 @@ RUN \
   apk update &&\
   apk --no-cache add docker docker-cli-compose
 
-COPY --from=build /app/package.json /app/version.json ./
-COPY --from=build /app/.yarn/releases .yarn/releases
+COPY --from=build /app/version.json ./
 COPY --from=build /app/dist/index.js dist/index.js
 
 EXPOSE 3000
 
-CMD ["yarn", "start"]
+CMD ["node", "dist/index.js"]
